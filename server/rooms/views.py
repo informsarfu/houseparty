@@ -41,4 +41,31 @@ def room(request, room_code):
             return Response({"error": "Only the host can delete the room."}, status=403)
         room.delete()
         return Response({"message": "Room deleted successfully."})
+    
+
+@api_view(['POST', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def room_access(request, room_code):
+    if request.method == 'POST':
+        if not Room.objects.filter(room_code=room_code).exists():
+            return Response({"error": "Room not found."}, status=404)
+        
+        room = Room.objects.get(room_code=room_code)
+        if request.user in room.users.all():
+            return Response({"message": "Already a member of the room."})
+        
+        room.users.add(request.user)
+        return Response({"message": "Joined the room successfully."})
+    
+    if request.method == 'DELETE':
+        if not Room.objects.filter(room_code=room_code).exists():
+            return Response({"error": "Room not found."}, status=404)
+        
+        room = Room.objects.get(room_code=room_code)
+        if request.user not in room.users.all():
+            return Response({"error": "Not a member of the room."}, status=403)
+        room.users.remove(request.user)
+        return Response({"message": "Left the room successfully."})
+
+
 
