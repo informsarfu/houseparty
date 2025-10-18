@@ -1,0 +1,112 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.text {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+}
+
+.underline {
+    height: 3px;
+    width: 60px;
+    background: #4299e1;
+    margin: 0 auto;
+    border-radius: 3px;
+}
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.input {
+    position: relative;
+}
+
+.input-field {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    background: #f7fafc;
+    color: #2d3748;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+    background: white;
+}
+
+.input-field::placeholder {
+    color: #a0aec0;
+}
+
+.submit-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.submit {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.submit:first-child {
+    background: #4299e1;
+    color: white;
+}
+
+.submit:last-child {
+    background: #edf2f7;
+    color: #2d3748;
+}
+
+.submit:hover {
+    transform: translateY(-1px);
+}
+
+.submit:first-child:hover {
+    background: #3182ce;
+}
+
+.submit:last-child:hover {
+    background: #e2e8f0;
+}
+
+/* Add a subtle background gradient to the body if you want */
+body {
+    background: linear-gradient(135deg, #f6f9fc 0%, #edf2f7 100%);
+    min-height: 100vh;
+}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { LoginSignup } from "./component/LoginSignup/LoginSignup";
 
 function App() {
   const [status, setStatus] = useState("Loading...");
@@ -11,9 +12,8 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <h1>HouseParty Client!</h1>
-      <p>API Status: {status}</p>
+    <div className="app-container">
+      <LoginSignup/>
     </div>
   );
 }
