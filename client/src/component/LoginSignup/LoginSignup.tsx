@@ -12,13 +12,16 @@ export const LoginSignup = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    const loginUrl = 'http://127.0.0.1:8000/api/auth/token/'
+    const signupUrl = 'http://127.0.0.1:8000/api/auth/register/'
+
     const handleSubmit = async () => {
         setLoading(true);
         setError("");
 
         try {
             if (isLogin) {
-                const response = await axios.post('http://127.0.0.1:8000/api/auth/token/', {
+                const response = await axios.post(loginUrl, {
                     username,
                     password
                 });
@@ -27,7 +30,7 @@ export const LoginSignup = () => {
                 localStorage.setItem('refreshToken', response.data.refresh);
                 navigate('/my-rooms');
             } else {
-                const response = await axios.post('http://127.0.0.1:8000/api/auth/register/', {
+                const response = await axios.post(signupUrl, {
                     name,
                     username,
                     password
@@ -39,7 +42,7 @@ export const LoginSignup = () => {
             }
         catch (err: any) {
             setError(err.response?.data?.detail || 'An error occurred. Please try again.');
-            alert("Username already exists!");
+            alert(error);
         }
         finally {
             setLoading(false);
