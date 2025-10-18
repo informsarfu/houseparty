@@ -5,8 +5,9 @@ import './MyRooms.css'
 
 export const MyRooms = () => {
   const [loading, setLoading] = useState(false);
-  const [allRooms, setAllRooms] = useState([]);
-  const [user, setUser] = useState({id: null, username: null, name: null});
+  const [allRooms, setAllRooms] = useState<string[]>([]);
+  const [user, setUser] = useState({id: null, name: null, username: null});
+  const [newRoom, setNewRoom] = useState("");
 
   const fetchRoomsUrl = 'http://127.0.0.1:8000/api/rooms/'
   const fetchUserInfoUrl = 'http://127.0.0.1:8000/api/auth/userinfo/'
@@ -19,7 +20,7 @@ export const MyRooms = () => {
       }
     }).then((response) => {
       setAllRooms(response.data);
-      console.log(response.data);
+      console.log("All Rooms Fetched - ", response.data);
     }).catch((error) => {
       console.log(error);
     });
@@ -33,11 +34,26 @@ export const MyRooms = () => {
       }
     }).then((response) => {
       setUser(response.data);
-      console.log('User info:', user);
+      console.log('User info - ', response.data);
     }).catch((error) => {
       console.log(error);   
     })
   }, [])
+
+
+  const addNewRoom = () => {
+    console.log('Creating room:', newRoom);
+    axios.post(fetchRoomsUrl,
+      { name: newRoom},
+      {headers: { Authorization: `Bearer ${JWTAuthToken}`}}
+    ).then((response) => {
+      console.log('Room created:', response.data);
+      setAllRooms([...allRooms, response.data]);
+      setNewRoom("");
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
 
 
   return (
@@ -48,8 +64,8 @@ export const MyRooms = () => {
 
       <section className="create-join-room-section">
         <div className="create-room-form">
-          <input type="text" placeholder="Enter room name" />
-          <button>Create New Room</button>
+          <input type="text" placeholder="Enter room name" value={newRoom} onChange={(e) => setNewRoom(e.target.value)} />
+          <button onClick={addNewRoom}>Create New Room</button>
         </div>
         <div className="join-room-form">
           <input type="text" placeholder="Enter room code" />
