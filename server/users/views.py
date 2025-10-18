@@ -13,6 +13,7 @@ from rest_framework.decorators import permission_classes
 def register_user(request):
     username = request.data.get('username')
     password = request.data.get('password')
+    name = request.data.get('name')
 
     if not username or not password:
         return Response({'error': 'Username and password are required.'}, status=400)
@@ -23,7 +24,7 @@ def register_user(request):
     if User.objects.filter(username=username).exists():
         return Response({'error': 'Username is already taken.'}, status=400)
     
-    user = User.objects.create_user(username=username, password=password)
+    user = User.objects.create_user(username=username, password=password, first_name=name)
     return Response({
         'message': 'User registered successfully!',
     }, status=status.HTTP_201_CREATED)
@@ -40,3 +41,15 @@ def logout_user(request):
         return Response({"message": "User logged out successfully!"}, status=status.HTTP_205_RESET_CONTENT)
     except Exception as e:
         return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+
+#Get user info
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_info(request):
+    user = request.user
+    return Response({
+        'id': user.id,
+        'name': user.first_name,
+        'username': user.username
+    })
