@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react';
+import axios from 'axios';
+
 import './LoginSignup.css'
 
 export const LoginSignup = () => {
@@ -24,6 +26,9 @@ export const LoginSignup = () => {
             <div className='input'>
                 <input type="password" className='input-field' placeholder='Password' />
             </div>
+        </div>
+        <div className="submit-container">
+            <button className="submit main-submit">Submit</button>
         </div>
         <div className="submit-container">
             <div className={isLogin === false ? "submit blue" : "submit"} onClick={() => setIsLogin(false)}>Sign-up</div>

@@ -73,6 +73,7 @@
     gap: 1rem;
 }
 
+
 .submit {
     flex: 1;
     padding: 0.75rem 1.5rem;
@@ -81,6 +82,22 @@
     cursor: pointer;
     text-align: center;
     transition: all 0.2s;
+    border: none;
+}
+
+.main-submit {
+    background: linear-gradient(90deg, #4299e1 0%, #38b2ac 100%);
+    color: #fff;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 8px rgba(66, 153, 225, 0.15);
+    letter-spacing: 0.5px;
+    margin-bottom: 1.5rem;
+}
+
+.main-submit:hover {
+    background: linear-gradient(90deg, #3182ce 0%, #319795 100%);
+    box-shadow: 0 4px 12px rgba(66, 153, 225, 0.25);
+    transform: scale(1.03);
 }
 
 .blue {
