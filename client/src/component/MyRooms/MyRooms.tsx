@@ -10,25 +10,38 @@ export const MyRooms = () => {
   const fetchRoomsUrl = 'http://127.0.0.1:8000/api/rooms/'
   const JWTAuthToken = localStorage.getItem('token')
 
-
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const data = await axios.get(fetchRoomsUrl, {
-          headers: {
-            Authorization: `Bearer ${JWTAuthToken}`
-          }
-        });
-        setAllRooms(data.data);
-        console.log(data);
-      } catch (error) {
-        console.log(error);
+    axios.get(fetchRoomsUrl, {
+      headers: {
+        Authorization: `Bearer ${JWTAuthToken}`
       }
-      setLoading(false);
-    }
-    fetchData();
+    }).then((response) => {
+      setAllRooms(response.data);
+      console.log(response.data);
+    }).catch((error) => {
+      console.log(error);
+    });
   }, [])
+
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const data = await axios.get(fetchRoomsUrl, {
+  //         headers: {
+  //           Authorization: `Bearer ${JWTAuthToken}`
+  //         }
+  //       });
+  //       setAllRooms(data.data);
+  //       console.log(data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //     setLoading(false);
+  //   }
+  //   fetchData();
+  // }, [])
 
   return (
     <div className="rooms-container">
