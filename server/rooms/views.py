@@ -6,6 +6,7 @@ from .models import Room, RoomFiles
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 
+# View all rooms of user, create room
 @api_view(['GET','POST'])
 @permission_classes([IsAuthenticated])
 def rooms(request):
@@ -21,7 +22,7 @@ def rooms(request):
         serializer = RoomSerializer(new_room)
         return Response(serializer.data)
 
-
+# Delete room, get room details
 @api_view(['GET', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def room(request, room_code):
@@ -43,6 +44,7 @@ def room(request, room_code):
         return Response({"message": "Room deleted successfully."}, status=200)
     
 
+# Join room, Leave room
 @api_view(['POST', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def room_access(request, room_code):
