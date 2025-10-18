@@ -25,7 +25,7 @@ export const LoginSignup = () => {
                     username,
                     password
                 });
-                console.log("Login successful:", response.data);
+                console.log("Login successful:", response);
                 localStorage.setItem('token', response.data.access);
                 localStorage.setItem('refreshToken', response.data.refresh);
                 navigate('/my-rooms');

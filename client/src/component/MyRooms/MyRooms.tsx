@@ -6,8 +6,10 @@ import './MyRooms.css'
 export const MyRooms = () => {
   const [loading, setLoading] = useState(false);
   const [allRooms, setAllRooms] = useState([]);
+  const [user, setUser] = useState({id: null, username: null, name: null});
 
   const fetchRoomsUrl = 'http://127.0.0.1:8000/api/rooms/'
+  const fetchUserInfoUrl = 'http://127.0.0.1:8000/api/auth/userinfo/'
   const JWTAuthToken = localStorage.getItem('token')
 
   useEffect(() => {
@@ -24,29 +26,24 @@ export const MyRooms = () => {
   }, [])
 
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     setLoading(true);
-  //     try {
-  //       const data = await axios.get(fetchRoomsUrl, {
-  //         headers: {
-  //           Authorization: `Bearer ${JWTAuthToken}`
-  //         }
-  //       });
-  //       setAllRooms(data.data);
-  //       console.log(data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //     setLoading(false);
-  //   }
-  //   fetchData();
-  // }, [])
+  useEffect(() => {
+    axios.get(fetchUserInfoUrl, {
+      headers: {
+        Authorization: `Bearer ${JWTAuthToken}`
+      }
+    }).then((response) => {
+      setUser(response.data);
+      console.log('User info:', user);
+    }).catch((error) => {
+      console.log(error);   
+    })
+  }, [])
+
 
   return (
     <div className="rooms-container">
       <header className="rooms-header">
-        <h1>Hello, User</h1>
+        <h1>Hello, {user.name}!</h1>
       </header>
 
       <section className="create-join-room-section">
@@ -63,10 +60,12 @@ export const MyRooms = () => {
       <section className="room-list-section">
         <h3>My rooms</h3>
         <div className="room-list">
-          <div className="room-card">
-            <h4>Example Room</h4>
-            <p>Code: ABC123</p>
-          </div>
+          {allRooms.map((room: any) => (
+              <div key={room.id} className="room-card">
+                <h4>{room.name}</h4>
+                <p>Code: {room.room_code}</p>
+              </div>
+            ))}
         </div>
       </section>
     </div>
