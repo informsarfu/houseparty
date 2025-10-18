@@ -1,17 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './LoginSignup.css'
 
 export const LoginSignup = () => {
+    
+    const [isLogin, setIsLogin] = useState(true);
+    console.log(isLogin);
+
   return (
     <div className='container'>
         <div className='header'>
-            <div className='text'>Sign-up</div>
+            <div className='text'>{isLogin ? "Login" : "Sign up"}</div>
             <div className='underline'></div>
         </div>
         <div className='inputs'>
-            <div className='input'>
-                <input type="text" className='input-field' placeholder='Name' />
-            </div>
+            {!isLogin && (
+                <div className='input'>
+                    <input type="text" className='input-field' placeholder='Name' />
+                </div>
+            )}
             <div className='input'>
                 <input type="text" className='input-field' placeholder='Username' />
             </div>
@@ -20,8 +26,8 @@ export const LoginSignup = () => {
             </div>
         </div>
         <div className="submit-container">
-            <div className="submit">Sign-up</div>
-            <div className="submit">Login</div>
+            <div className={isLogin === false ? "submit blue" : "submit"} onClick={() => setIsLogin(false)}>Sign-up</div>
+            <div className={isLogin === true ? "submit blue" : "submit"} onClick={() => setIsLogin(true)}>Login</div>
         </div>
     </div>
   )

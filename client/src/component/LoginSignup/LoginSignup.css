@@ -83,26 +83,12 @@
     transition: all 0.2s;
 }
 
-.submit:first-child {
+.blue {
     background: #4299e1;
-    color: white;
-}
-
-.submit:last-child {
-    background: #edf2f7;
-    color: #2d3748;
 }
 
 .submit:hover {
     transform: translateY(-1px);
-}
-
-.submit:first-child:hover {
-    background: #3182ce;
-}
-
-.submit:last-child:hover {
-    background: #e2e8f0;
 }
 
 /* Add a subtle background gradient to the body if you want */
