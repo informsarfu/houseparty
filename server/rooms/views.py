@@ -48,13 +48,12 @@ def room(request, room_code):
 @api_view(['POST', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def room_access(request, room_code):
+    try:
+        room = Room.objects.get(room_code=room_code)
+    except Room.DoesNotExist:
+        return Response({"error": "Room not found."}, status=404)
+    
     if request.method == 'POST':
-        try:
-            room = Room.objects.get(room_code=room_code)
-        except Room.DoesNotExist:
-            return Response({"error": "Room not found."}, status=404)
-
-        
         room = Room.objects.get(room_code=room_code)
         if request.user in room.users.all():
             return Response({"message": "Already a member of the room."}, status=200)
@@ -63,11 +62,6 @@ def room_access(request, room_code):
         return Response({"message": "Joined the room successfully."}, status=200)
     
     if request.method == 'DELETE':
-        try:
-            room = Room.objects.get(room_code=room_code)
-        except Room.DoesNotExist:
-            return Response({"error": "Room not found."}, status=404)
-        
         room = Room.objects.get(room_code=room_code)
         if request.user not in room.users.all():
             return Response({"error": "Not a member of the room."}, status=403)
@@ -75,5 +69,51 @@ def room_access(request, room_code):
         return Response({"message": "Left the room successfully."}, status=200)
 
 
+#file upload to room, get files, delete files
+@api_view(['POST', 'GET', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def files(request, room_code):
+    try:
+        room = Room.objects.get(room_code=room_code)
+    except Room.DoesNotExist:
+        return Response({"error": "Room not found."}, status=404)
+    
+    if request.method == 'POST':
+        uploaded_file = request.FILES.get('file')
+        user = request.user
 
+        if not uploaded_file:
+            return Response({"error": "No file provided."}, status=400)
+        
+        if user not in room.users.all():
+            return Response({"error": "Not authorized to upload"}, status=401)
+        
+        room_file = RoomFiles.objects.create(
+            room=room,
+            file=uploaded_file,
+            uploaded_by=user
+        )
 
+        serializer = RoomFilesSerializer(room_file)
+        return Response(serializer.data, status=201)
+    
+    if request.method == 'GET':
+        if request.user not in room.users.all():
+            return Response({"error": "Not authorized to view files"}, status=401)
+
+        room_files = RoomFiles.objects.filter(room=room)
+        serializer = RoomFilesSerializer(room_files, many=True)
+        return Response(serializer.data)
+
+    if request.method == 'DELETE':
+        file_id = request.data.get('file_id')
+        try:
+            room_file = RoomFiles.objects.get(id=file_id, room=room)
+        except RoomFiles.DoesNotExist:
+            return Response({"error": "File not found."}, status=404)
+
+        if room_file.uploaded_by != request.user and room.host != request.user:
+            return Response({"error": "Not authorized to delete this file."}, status=403)
+    
+        room_file.delete()
+        return Response({"message": "file deleted successfully."}, status=200)
