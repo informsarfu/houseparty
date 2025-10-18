@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { LoginSignup } from "./component/LoginSignup/LoginSignup";
+import { MyRooms } from "./component/MyRooms/MyRooms";
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
 function App() {
   const [status, setStatus] = useState("Loading...");
@@ -12,9 +14,12 @@ function App() {
   }, []);
 
   return (
-    <div className="app-container">
-      <LoginSignup/>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LoginSignup />} />
+        <Route path="/my-rooms" element={<MyRooms />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

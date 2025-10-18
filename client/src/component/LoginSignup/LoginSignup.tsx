@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
 import './LoginSignup.css'
 
 export const LoginSignup = () => {
@@ -10,6 +10,7 @@ export const LoginSignup = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -22,6 +23,9 @@ export const LoginSignup = () => {
                     password
                 });
                 console.log("Login successful:", response.data);
+                localStorage.setItem('token', response.data.access);
+                localStorage.setItem('refreshToken', response.data.refresh);
+                navigate('/my-rooms');
             } else {
                 const response = await axios.post('http://127.0.0.1:8000/api/auth/register/', {
                     name,
@@ -35,7 +39,7 @@ export const LoginSignup = () => {
             }
         catch (err: any) {
             setError(err.response?.data?.detail || 'An error occurred. Please try again.');
-            alert(error);
+            alert("Username already exists!");
         }
         finally {
             setLoading(false);
