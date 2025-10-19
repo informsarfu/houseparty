@@ -54,13 +54,17 @@ def room_access(request, room_code):
     except Room.DoesNotExist:
         return Response({"error": "Room not found."}, status=404)
     
+    serializer = RoomSerializer(room)
     if request.method == 'POST':
         room = Room.objects.get(room_code=room_code)
         if request.user in room.users.all():
-            return Response({"message": "Already a member of the room."}, status=200)
+            return Response({
+                "message": "Already a member of the room.",
+                "room": None}, status=200)
         
         room.users.add(request.user)
-        return Response({"message": "Joined the room successfully."}, status=200)
+        return Response({"message": "Joined the room successfully.",
+                         "room": serializer.data}, status=200)
     
     if request.method == 'DELETE':
         room = Room.objects.get(room_code=room_code)

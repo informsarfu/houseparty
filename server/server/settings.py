@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'users',
     'rooms',
     'anchor',
+    'rest_framework_simplejwt.token_blacklist'
 ]
 
 REST_FRAMEWORK = {
