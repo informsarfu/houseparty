@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from 'axios'
+import axios, { all } from 'axios'
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
 import './MyRooms.css'
@@ -7,13 +7,13 @@ import copyIcon from '../../assets/copy_clipboard.png';
 
 export const MyRooms = () => {
   // const [loading, setLoading] = useState(false);
-  const [allRooms, setAllRooms] = useState<string[]>([]);
+  const [allRooms, setAllRooms] = useState<any>([]);
   const [user, setUser] = useState({id: null, name: null, username: null});
   const [newRoom, setNewRoom] = useState("");
   const [joinRoom, setJoinRoom] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<any>(null);
-  const [allFiles, setAllFiles] = useState([]);
+  const [allFiles, setAllFiles] = useState<any[]>([]);
   const initialRender = useRef(true);
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -190,7 +190,29 @@ export const MyRooms = () => {
 
   //upload a file
   const handleUploadFile = () => {
+    console.log("Upload files.. -> ", fileInput.current?.files);
+    const file = fileInput.current?.files?.[0];
+    if (!file) {
+      console.log("No file selected");
+      return;
+    }
+    let formData = new FormData();
+    formData.append("file", file);
 
+    axios.post(fetchRoomsUrl + selectedRoom.room_code + "/files/", formData, 
+      {
+        headers: { 
+          Authorization: JWTAuthToken,
+          "Content-Type": "multipart/form-data"
+        }
+     })
+     .then((response) => {
+      console.log(response);
+      setAllFiles((prevFiles) => [...prevFiles, response.data]);
+     })
+     .catch((error) => {
+      console.log("File upload failed -> ", error)
+     })
   }
 
 
