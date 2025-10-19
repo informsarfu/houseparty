@@ -5,13 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import './MyRooms.css'
 
 export const MyRooms = () => {
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [allRooms, setAllRooms] = useState<string[]>([]);
   const [user, setUser] = useState({id: null, name: null, username: null});
   const [newRoom, setNewRoom] = useState("");
   const [joinRoom, setJoinRoom] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<any>(null);
+  const [allFiles, setAllFiles] = useState([]);
+
   const navigate = useNavigate();
 
   const fetchRoomsUrl = 'http://127.0.0.1:8000/api/rooms/'
@@ -20,6 +22,7 @@ export const MyRooms = () => {
   const fetchLogoutUrl = 'http://127.0.0.1:8000/api/auth/logout/'
   const JWTAuthToken = `Bearer ${localStorage.getItem('token')}`
 
+  //fetch all rooms for user
   useEffect(() => {
     axios.get(fetchRoomsUrl, {
       headers: {
@@ -33,7 +36,7 @@ export const MyRooms = () => {
     });
   }, [])
 
-
+  //fetch user info
   useEffect(() => {
     axios.get(fetchUserInfoUrl, {
       headers: {
@@ -47,7 +50,17 @@ export const MyRooms = () => {
     })
   }, [])
 
+  // //fetch all files related to a room
+  // useEffect(() => {
+  //   axios.get(fetchRoomAccess + selectedRoom?.room_code + '/files/', 
+  //     {headers: { Authorization: JWTAuthToken}}
+  //   ).then((response) => {
+  //     setAllFiles(response.data);
+  //     console.log("All Files for the user", allFiles);
+  //   }).catch
+  // }, [modalOpen])
 
+  //add new room for user
   const addNewRoom = () => {
     if (newRoom.trim() === "") {
       console.log("Room Name cannot be Empty");
@@ -66,6 +79,7 @@ export const MyRooms = () => {
     });
   }
 
+  // join a room for user
   const joinNewRoom = () => {
     if (joinRoom.trim() === "") {
       console.log("Please enter a valid Room Code");
@@ -87,7 +101,7 @@ export const MyRooms = () => {
     });
   }
 
-
+  //Logout user
   const logoutUser = () => {
     axios.post(fetchLogoutUrl, 
       { refresh: localStorage.getItem('refreshToken')},
@@ -102,6 +116,7 @@ export const MyRooms = () => {
     })
   }
 
+  //leave room for user
   const leaveRoom = (room_code: string) => {
     axios.delete(fetchRoomAccess + room_code + "/access/", 
       { headers: { Authorization: JWTAuthToken}}
@@ -158,11 +173,17 @@ export const MyRooms = () => {
         </div>
       </section>
       {modalOpen && (
-        <div className="modal-overlay" onClick={() => setModalOpen(false)}>
+        <div className="modal-overlay" onClick={() => {
+          setModalOpen(false);
+          setAllFiles([]);
+        }}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <h2>{selectedRoom?.name}</h2>
             <p>Code: {selectedRoom?.room_code}</p>
-            <button onClick={() => setModalOpen(false)}>Close</button>
+            <button onClick={() => {
+              setModalOpen(false);
+              setAllFiles([]);
+              }}>Close</button>
           </div>
         </div>
       )}

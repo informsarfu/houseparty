@@ -10,7 +10,7 @@ class RoomListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        all_rooms = Room.objects.filter(users=request.user) | Room.objects.filter(host=request.user)
+        all_rooms = Room.objects.filter(users=request.user)
         serializer = RoomSerializer(all_rooms, many=True)
         return Response(serializer.data)
 
@@ -67,9 +67,13 @@ def room_access(request, room_code):
                          "room": serializer.data}, status=200)
     
     if request.method == 'DELETE':
+        print("Room-code -> ", room_code )
         room = Room.objects.get(room_code=room_code)
+        print(room.users.all())
         if request.user not in room.users.all():
             return Response({"error": "Not a member of the room."}, status=403)
+        if request.user == room.host:
+            return Response({"error": "You cannot leave the room since you are the host"}, status=403)
         room.users.remove(request.user)
         return Response({"message": "Left the room successfully."}, status=200)
 
