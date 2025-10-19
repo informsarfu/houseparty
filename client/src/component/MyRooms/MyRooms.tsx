@@ -21,7 +21,6 @@ export const MyRooms = () => {
   const baseUrl = "http://127.0.0.1:8000/"
   const fetchRoomsUrl = 'http://127.0.0.1:8000/api/rooms/'
   const fetchUserInfoUrl = 'http://127.0.0.1:8000/api/auth/userinfo/'
-  // const fetchRoomAccess = 'http://127.0.0.1:8000/api/rooms/'
   const fetchLogoutUrl = 'http://127.0.0.1:8000/api/auth/logout/'
   const JWTAuthToken = `Bearer ${localStorage.getItem('token')}`
 
@@ -76,7 +75,7 @@ export const MyRooms = () => {
 
 
   //add new room for user
-  const addNewRoom = () => {
+  const handleCreateRoom = () => {
     if (newRoom.trim() === "") {
       console.log("Room Name cannot be Empty");
       return;
@@ -98,7 +97,7 @@ export const MyRooms = () => {
 
   
   // join a room for user
-  const joinNewRoom = () => {
+  const handleJoinRoom = () => {
     if (joinRoom.trim() === "") {
       console.log("Please enter a valid Room Code");
       return;
@@ -123,7 +122,7 @@ export const MyRooms = () => {
 
 
   //Logout user
-  const logoutUser = () => {
+  const handleLogout = () => {
     axios.post(fetchLogoutUrl, 
       { refresh: localStorage.getItem('refreshToken')},
       { headers: { Authorization: JWTAuthToken}}
@@ -140,7 +139,7 @@ export const MyRooms = () => {
   }
 
 //delete room
-  const deleteRoom = (room_code: string) => {
+  const handleDeleteRoom = (room_code: string) => {
     axios.delete(fetchRoomsUrl + room_code, 
       { headers: { Authorization: JWTAuthToken}}
     )
@@ -155,7 +154,7 @@ export const MyRooms = () => {
 
 
   //leave room for user
-  const leaveRoom = (room_code: string) => {
+  const handleLeaveRoom = (room_code: string) => {
     axios.delete(fetchRoomsUrl + room_code + "/access/", 
       { headers: { Authorization: JWTAuthToken}}
     )
@@ -170,7 +169,7 @@ export const MyRooms = () => {
 
 
   //delete a file
-  const deleteFile = (file_id: string) => {
+  const handleDeleteFile = (file_id: string) => {
     axios.delete(fetchRoomsUrl + selectedRoom.room_code + "/files/", 
       { 
         headers: { Authorization: JWTAuthToken},
@@ -187,21 +186,27 @@ export const MyRooms = () => {
   }
 
 
+  //upload a file
+  const handleUploadFile = () => {
+
+  }
+
+
   return (
     <div className="rooms-container">
       <header className="rooms-header">
         <h1>Hello, {user.name}!</h1>
-        <button className="logout-btn" onClick={logoutUser}>Logout</button>
+        <button className="logout-btn" onClick={handleLogout}>Logout</button>
       </header>
 
       <section className="create-join-room-section">
         <div className="create-room-form">
           <input type="text" placeholder="Enter room name" value={newRoom} onChange={(e) => setNewRoom(e.target.value)} />
-          <button onClick={addNewRoom}>Create New Room</button>
+          <button onClick={handleCreateRoom}>Create New Room</button>
         </div>
         <div className="join-room-form">
           <input type="text" placeholder="Enter room code" value={joinRoom} onChange={(e) => setJoinRoom(e.target.value)}/>
-          <button onClick={joinNewRoom}>Join Room</button>
+          <button onClick={handleJoinRoom}>Join Room</button>
         </div>
       </section>
 
@@ -237,14 +242,14 @@ export const MyRooms = () => {
                 <button className='leave-btn' 
                   onClick={e => {
                     e.stopPropagation();
-                    leaveRoom(room.room_code)}}>
+                    handleLeaveRoom(room.room_code)}}>
                     Leave
                 </button>
                 {room.host === user.id && 
                 <button className='delete-btn' 
                   onClick={e => {
                     e.stopPropagation();
-                    deleteRoom(room.room_code)}}>
+                    handleDeleteRoom(room.room_code)}}>
                     Delete
                 </button>
                 }
@@ -259,6 +264,19 @@ export const MyRooms = () => {
         }}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
+              <button
+                className="upload-btn"
+                onClick={() => document.getElementById('fileInput')?.click()}
+              >
+                Upload File
+              </button>
+              <input
+                id="fileInput"
+                type="file"
+                hidden
+                onChange={handleUploadFile}
+              />
+              
               <div className="room-info">
                 <h2>{selectedRoom?.name}</h2>
               </div>
@@ -285,7 +303,7 @@ export const MyRooms = () => {
 
                       <p>{fullFileUrl.split('/').pop()}</p>
                       {(file.uploaded_by == user.id || user.id == selectedRoom.host) && 
-                      <button className="delete-file-btn" onClick={(e) => deleteFile(file.id)}>
+                      <button className="delete-file-btn" onClick={(e) => handleDeleteFile(file.id)}>
                         delete
                       </button>}
                     </div>
