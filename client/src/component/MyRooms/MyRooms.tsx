@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
 import './MyRooms.css'
 
@@ -13,6 +13,7 @@ export const MyRooms = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<any>(null);
   const [allFiles, setAllFiles] = useState([]);
+  const initialRender = useRef(true);
 
   const navigate = useNavigate();
 
@@ -32,7 +33,7 @@ export const MyRooms = () => {
       setAllRooms(response.data);
       console.log("All Rooms Fetched - ", response.data);
     }).catch((error) => {
-      console.log(error);
+      console.log("Error while fetching rooms -> ", error);
     });
   }, [])
 
@@ -46,18 +47,23 @@ export const MyRooms = () => {
       setUser(response.data);
       console.log('User info - ', response.data);
     }).catch((error) => {
-      console.log(error);   
+      console.log("Error while fetching user info -> ", error); 
     })
   }, [])
 
   //fetch all files related to a room
   useEffect(() => {
+    if(initialRender.current){
+      return;
+    }
     axios.get(fetchRoomAccess + selectedRoom?.room_code + '/files/', 
       {headers: { Authorization: JWTAuthToken}}
     ).then((response) => {
       setAllFiles(response.data);
       console.log("All Files for the user", allFiles);
-    }).catch
+    }).catch((error) => {
+      console.log("Error while fetching files ", error);
+    })
   }, [modalOpen])
 
   //add new room for user
@@ -75,7 +81,7 @@ export const MyRooms = () => {
       setAllRooms([...allRooms, response.data]);
       setNewRoom("");
     }).catch((error) => {
-      console.log(error);
+      console.log("Error while adding new room ", error);
     });
   }
 
@@ -97,7 +103,7 @@ export const MyRooms = () => {
       }
       setJoinRoom("");
     }).catch((error) => {
-      console.log("Enter a valid Room Code");
+      console.log("Enter a valid Room Code", error);
     });
   }
 
@@ -112,7 +118,7 @@ export const MyRooms = () => {
       localStorage.removeItem('refreshToken');
       navigate('/');
     }).catch((error) => {
-      console.log(error);
+      console.log("Error while logging out -> ", error);
     })
   }
 
@@ -124,7 +130,7 @@ export const MyRooms = () => {
       console.log(response.data.message);
       setAllRooms(allRooms.filter((room: any) => room.room_code !== room_code));
     }).catch((error) => {
-      console.log(error);
+      console.log("Error while leaving room -> ", error);
     });
   }
 
@@ -158,6 +164,7 @@ export const MyRooms = () => {
                   if (window.getSelection && window.getSelection()?.toString()) return;
                   setModalOpen(true);
                   setSelectedRoom(room);
+                  initialRender.current = false;
                 }}>
                   
                 <h4>{room.name}</h4>
