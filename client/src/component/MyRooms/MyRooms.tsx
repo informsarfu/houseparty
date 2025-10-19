@@ -50,15 +50,15 @@ export const MyRooms = () => {
     })
   }, [])
 
-  // //fetch all files related to a room
-  // useEffect(() => {
-  //   axios.get(fetchRoomAccess + selectedRoom?.room_code + '/files/', 
-  //     {headers: { Authorization: JWTAuthToken}}
-  //   ).then((response) => {
-  //     setAllFiles(response.data);
-  //     console.log("All Files for the user", allFiles);
-  //   }).catch
-  // }, [modalOpen])
+  //fetch all files related to a room
+  useEffect(() => {
+    axios.get(fetchRoomAccess + selectedRoom?.room_code + '/files/', 
+      {headers: { Authorization: JWTAuthToken}}
+    ).then((response) => {
+      setAllFiles(response.data);
+      console.log("All Files for the user", allFiles);
+    }).catch
+  }, [modalOpen])
 
   //add new room for user
   const addNewRoom = () => {
