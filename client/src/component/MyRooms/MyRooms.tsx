@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
 import './MyRooms.css'
+import copyIcon from '../../assets/copy_clipboard.png';
 
 export const MyRooms = () => {
   // const [loading, setLoading] = useState(false);
@@ -169,8 +170,21 @@ export const MyRooms = () => {
                 }}>
                   
                 <h4>{room.name}</h4>
-                <p>Code: {room.room_code}</p>
-                <button className='deleteBtn' 
+                <p>Code: <span className="code-text">{room.room_code}</span>
+                  <button className="copy-btn" onClick={(e) => {
+                    e.stopPropagation();
+                    navigator.clipboard.writeText(room.room_code);
+                  }
+                  }>
+                    <img
+                      src={copyIcon}
+                      alt="Copy to Clipboard"
+                      width="15"
+                      height="15"
+                    />
+                  </button>
+                </p>
+                <button className='leave-btn' 
                   onClick={e => {
                     e.stopPropagation();
                     leaveRoom(room.room_code)}}>
@@ -186,7 +200,15 @@ export const MyRooms = () => {
           setAllFiles([]);
         }}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <h2>{selectedRoom?.name}</h2>
+            <div className="modal-header">
+              <div className="room-info">
+                <h2>{selectedRoom?.name}</h2>
+              </div>
+              <button className='close-btn' onClick={() => {
+                setModalOpen(false);
+                setAllFiles([]);
+                }}>X</button>
+            </div>
             <div className="files-grid">
               {allFiles.length > 0 && allFiles.map((file: any) => {
                   const fileUrl = file.file;
@@ -210,10 +232,6 @@ export const MyRooms = () => {
               }
               {allFiles.length === 0 && <p>No Files Available</p>}
             </div>
-            <button onClick={() => {
-              setModalOpen(false);
-              setAllFiles([]);
-              }}>Close</button>
           </div>
         </div>
       )}

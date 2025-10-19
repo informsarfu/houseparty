@@ -64,9 +64,9 @@ section h3 {
 
 .create-room-form button,
 .join-room-form button,
-.rooms-container button {
+.rooms-container button:not(.copy-btn) {
   font-size: 0.85rem;
-  padding: 0.4rem 0.8rem;
+  padding: 0.2rem 0.4rem;
   min-width: 60px;
   background: linear-gradient(90deg, #4299e1 0%, #38b2ac 100%);
   color: #fff;
@@ -79,7 +79,7 @@ section h3 {
 
 .create-room-form button:hover,
 .join-room-form button:hover,
-.rooms-container button:hover {
+.rooms-container button:not(.copy-btn):hover {
   background: linear-gradient(90deg, #3182ce 0%, #319795 100%);
   transform: scale(1.04);
 }
@@ -114,7 +114,7 @@ section h3 {
 .room-card {
   background: #e1eff8;
   border-radius: 10px;
-  padding: 2.5rem 1rem;
+  padding: 1.2rem 1rem;
   box-shadow: 0 2px 8px rgba(66,153,225,0.07);
   display: flex;
   flex-direction: column;
@@ -141,11 +141,11 @@ section h3 {
   font-size: 12px;
 }
 
-
-.room-card button:hover {
-  background: #db3f3f;
-  transform: scale(1.05);
+.room-card .leave-btn {
+  margin-top: 30px;
+  padding-bottom: 2px;
 }
+
 
 .create-join-room-section {
   margin-top: 1rem;
@@ -171,7 +171,6 @@ section h3 {
   right: 1rem;
   z-index: 20;
   padding: 0.5rem 1.2rem;
-  background: #e53e3e;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -179,26 +178,6 @@ section h3 {
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(229,62,62,0.12);
   transition: background 0.2s, transform 0.2s;
-}
-.logout-btn:hover {
-  background: #c53030;
-  transform: scale(1.05);
-}
-
-.delete-btn {
-  background: linear-gradient(90deg, #e53e3e 0%, #f56565 100%);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0.5rem 1.2rem;
-  box-shadow: 0 2px 8px rgba(229,62,62,0.12);
-  transition: background 0.2s, transform 0.2s;
-}
-.delete-btn:hover {
-  background: linear-gradient(90deg, #c53030 0%, #e53e3e 100%);
-  transform: scale(1.05);
 }
 
 
@@ -275,7 +254,7 @@ section h3 {
   margin-bottom: 6px;
 }
 
-/* === PDF Preview === */
+
 embed {
   width: 100%;
   height: 200px;
@@ -285,7 +264,6 @@ embed {
   margin-bottom: 6px;
 }
 
-/* === File Name === */
 .file-preview p {
   font-size: 0.9rem;
   color: #555;
@@ -309,7 +287,6 @@ embed {
   background-color: #1557b0;
 }
 
-/* === Animation === */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -320,4 +297,59 @@ embed {
     transform: scale(1);
   }
 }
+
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 16px;
+  margin-top: -20px; 
+}
+
+.room-info {
+  text-align: left;
+}
+
+.room-info h2 {
+  font-size: 1.5rem;
+  margin: 0;
+  color: #222;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #000;
+}
+
+.copy-btn {
+  all: unset;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.copy-btn img {
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.copy-btn:hover img {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+
 
