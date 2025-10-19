@@ -15,6 +15,8 @@ export const MyRooms = () => {
   const [selectedRoom, setSelectedRoom] = useState<any>(null);
   const [allFiles, setAllFiles] = useState([]);
   const initialRender = useRef(true);
+  const fileInput = useRef<HTMLInputElement>(null);
+
 
   const navigate = useNavigate();
 
@@ -266,12 +268,12 @@ export const MyRooms = () => {
             <div className="modal-header">
               <button
                 className="upload-btn"
-                onClick={() => document.getElementById('fileInput')?.click()}
+                onClick={() => fileInput.current?.click()}
               >
                 Upload File
               </button>
               <input
-                id="fileInput"
+                ref={fileInput}
                 type="file"
                 hidden
                 onChange={handleUploadFile}
