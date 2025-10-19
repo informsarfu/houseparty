@@ -226,3 +226,49 @@ section h3 {
   justify-content: center;
   text-align: center;
 }
+
+
+.files-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.file-content {
+  background: #f7fafc;
+  border-radius: 8px;
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(66,153,225,0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.file-content p {
+  margin: 0 0 0.3rem 0;
+  font-size: 0.9rem;
+  word-break: break-all;
+  top: 0;
+  left: 0;
+}
+
+.preview-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 0.2rem;
+}
+
+.preview-pdf {
+  width: 60px;
+  height: 60px;
+  border: none;
+  margin-bottom: 0.2rem;
+}

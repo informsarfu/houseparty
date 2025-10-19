@@ -17,6 +17,7 @@ export const MyRooms = () => {
 
   const navigate = useNavigate();
 
+  const baseUrl = "http://127.0.0.1:8000/"
   const fetchRoomsUrl = 'http://127.0.0.1:8000/api/rooms/'
   const fetchUserInfoUrl = 'http://127.0.0.1:8000/api/auth/userinfo/'
   const fetchRoomAccess = 'http://127.0.0.1:8000/api/rooms/'
@@ -186,7 +187,28 @@ export const MyRooms = () => {
         }}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <h2>{selectedRoom?.name}</h2>
-            <p>Code: {selectedRoom?.room_code}</p>
+            <div className="files-container">
+              {allFiles.map((file: any) => {
+                  const fileUrl = file.file;
+                  const extension = fileUrl.split('.').pop().toLowerCase();
+                  const fullFileUrl = baseUrl + fileUrl
+
+                  return (
+                    <div key={file.id} className="file-content">
+                      <p>{fileUrl.split('/').pop()}</p>
+
+                      {['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(extension) ? (
+                        <img src={fullFileUrl} alt="Uploaded file" className="preview-image" />
+                      ) : extension === 'pdf' ? (
+                        <iframe src={fullFileUrl} title="PDF Preview" className="preview-pdf"></iframe>
+                      ) : (
+                        <p>Preview not available</p>
+                      )}
+                    </div>
+                  )
+                })
+              }
+            </div>
             <button onClick={() => {
               setModalOpen(false);
               setAllFiles([]);
