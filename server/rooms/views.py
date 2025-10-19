@@ -85,6 +85,7 @@ def room_access(request, room_code):
 def files(request, room_code):
     try:
         room = Room.objects.get(room_code=room_code)
+        print("Room -> ", room)
     except Room.DoesNotExist:
         return Response({"error": "Room not found."}, status=404)
     
@@ -118,6 +119,7 @@ def files(request, room_code):
 
     if request.method == 'DELETE':
         file_id = request.data.get('file_id')
+        print("file id -> ", file_id)
         try:
             room_file = RoomFiles.objects.get(id=file_id, room=room)
         except RoomFiles.DoesNotExist:

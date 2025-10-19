@@ -31,10 +31,12 @@ export const MyRooms = () => {
       headers: {
         Authorization: JWTAuthToken
       }
-    }).then((response) => {
+    })
+    .then((response) => {
       setAllRooms(response.data);
       console.log("All Rooms Fetched - ", response.data);
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.log("Error while fetching rooms -> ", error);
     });
   }, [])
@@ -45,10 +47,12 @@ export const MyRooms = () => {
       headers: {
         Authorization: JWTAuthToken
       }
-    }).then((response) => {
+    })
+    .then((response) => {
       setUser(response.data);
       console.log('User info - ', response.data);
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.log("Error while fetching user info -> ", error); 
     })
   }, [])
@@ -60,13 +64,16 @@ export const MyRooms = () => {
     }
     axios.get(fetchRoomsUrl + selectedRoom?.room_code + '/files/', 
       {headers: { Authorization: JWTAuthToken}}
-    ).then((response) => {
+    )
+    .then((response) => {
       setAllFiles(response.data);
       console.log("All Files for the user", allFiles);
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.log("Error while fetching files ", error);
     })
   }, [modalOpen])
+
 
   //add new room for user
   const addNewRoom = () => {
@@ -78,15 +85,18 @@ export const MyRooms = () => {
     axios.post(fetchRoomsUrl,
       { name: newRoom },
       { headers: { Authorization: JWTAuthToken} } 
-    ).then((response) => {
+    )
+    .then((response) => {
       console.log('Room created:', response.data);
       setAllRooms([...allRooms, response.data]);
       setNewRoom("");
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.log("Error while adding new room ", error);
     });
   }
 
+  
   // join a room for user
   const joinNewRoom = () => {
     if (joinRoom.trim() === "") {
@@ -96,7 +106,8 @@ export const MyRooms = () => {
     axios.post(fetchRoomsUrl + joinRoom + "/access/",
       { room_code: joinRoom },
       { headers: { Authorization: JWTAuthToken}}
-    ).then((response) => {
+    )
+    .then((response) => {
       if(response.data.room == null) {
         console.log(response.data.message);
       } else {
@@ -104,22 +115,26 @@ export const MyRooms = () => {
         console.log(response.data.message);
       }
       setJoinRoom("");
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.log("Enter a valid Room Code", error);
     });
   }
+
 
   //Logout user
   const logoutUser = () => {
     axios.post(fetchLogoutUrl, 
       { refresh: localStorage.getItem('refreshToken')},
       { headers: { Authorization: JWTAuthToken}}
-    ).then((response) => {
+    )
+    .then((response) => {
       console.log(response.data.message);
       localStorage.removeItem('token');
       localStorage.removeItem('refreshToken');
       navigate('/');
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.log("Error while logging out -> ", error);
     })
   }
@@ -128,24 +143,45 @@ export const MyRooms = () => {
   const deleteRoom = (room_code: string) => {
     axios.delete(fetchRoomsUrl + room_code, 
       { headers: { Authorization: JWTAuthToken}}
-    ).then((response) => {
+    )
+    .then((response) => {
       console.log(response.data.message);
       setAllRooms(allRooms.filter((room: any) => room.room_code !== room_code));
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.log("Error while deleting room -> ", error);
     });
   }
-
 
 
   //leave room for user
   const leaveRoom = (room_code: string) => {
     axios.delete(fetchRoomsUrl + room_code + "/access/", 
       { headers: { Authorization: JWTAuthToken}}
-    ).then((response) => {
+    )
+    .then((response) => {
       console.log(response.data.message);
       setAllRooms(allRooms.filter((room: any) => room.room_code !== room_code));
-    }).catch((error) => {
+    })
+    .catch((error) => {
+      console.log("Error while leaving room -> ", error);
+    });
+  }
+
+
+  //delete a file
+  const deleteFile = (file_id: string) => {
+    axios.delete(fetchRoomsUrl + selectedRoom.room_code + "/files/", 
+      { 
+        headers: { Authorization: JWTAuthToken},
+        data: {file_id: file_id}
+      }
+    )
+    .then((response) => {
+      console.log(response.data.message);
+      setAllFiles(allFiles.filter((file: any) => file.id !== file_id));
+    })
+    .catch((error) => {
       console.log("Error while leaving room -> ", error);
     });
   }
@@ -248,6 +284,10 @@ export const MyRooms = () => {
                       )}
 
                       <p>{fullFileUrl.split('/').pop()}</p>
+                      {(file.uploaded_by == user.id || user.id == selectedRoom.host) && 
+                      <button className="delete-file-btn" onClick={(e) => deleteFile(file.id)}>
+                        delete
+                      </button>}
                     </div>
                   )
                 })
