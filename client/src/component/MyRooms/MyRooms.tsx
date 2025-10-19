@@ -6,7 +6,6 @@ import './MyRooms.css'
 import copyIcon from '../../assets/copy_clipboard.png';
 
 export const MyRooms = () => {
-  // const [loading, setLoading] = useState(false);
   const [allRooms, setAllRooms] = useState<any>([]);
   const [user, setUser] = useState({id: null, name: null, username: null});
   const [newRoom, setNewRoom] = useState("");
@@ -191,15 +190,19 @@ export const MyRooms = () => {
   //upload a file
   const handleUploadFile = () => {
     console.log("Upload files.. -> ", fileInput.current?.files);
-    const file = fileInput.current?.files?.[0];
-    if (!file) {
+    const file_array = fileInput.current?.files;
+    if (!file_array || file_array.length == 0) {
       console.log("No file selected");
       return;
     }
-    let formData = new FormData();
-    formData.append("file", file);
 
-    axios.post(fetchRoomsUrl + selectedRoom.room_code + "/files/", formData, 
+    let formData = new FormData();
+
+    for(let file of file_array){
+      formData.append("file", file);
+      console.log("Form Data -> ", formData);
+
+      axios.post(fetchRoomsUrl + selectedRoom.room_code + "/files/", formData, 
       {
         headers: { 
           Authorization: JWTAuthToken,
@@ -213,6 +216,7 @@ export const MyRooms = () => {
      .catch((error) => {
       console.log("File upload failed -> ", error)
      })
+    }
   }
 
 
@@ -298,6 +302,7 @@ export const MyRooms = () => {
                 ref={fileInput}
                 type="file"
                 hidden
+                multiple
                 onChange={handleUploadFile}
               />
               

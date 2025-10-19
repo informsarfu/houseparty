@@ -90,6 +90,7 @@ def files(request, room_code):
         return Response({"error": "Room not found."}, status=404)
     
     if request.method == 'POST':
+        print("File upload request -> ", request.FILES)
         uploaded_file = request.FILES.get('file')
         user = request.user
         print(uploaded_file)
