@@ -16,7 +16,7 @@ class RoomListView(APIView):
 
     def post(self, request):
         room_name = request.data.get('name')
-        new_room = Room.objects.create(name=room_name, host=request.user)
+        new_room = Room.objects.create(name=room_name, host=request.user) 
         new_room.users.add(request.user)
         serializer = RoomSerializer(new_room)
         return Response(serializer.data)
@@ -90,6 +90,7 @@ def files(request, room_code):
     if request.method == 'POST':
         uploaded_file = request.FILES.get('file')
         user = request.user
+        print(uploaded_file)
 
         if not uploaded_file:
             return Response({"error": "No file provided."}, status=400)

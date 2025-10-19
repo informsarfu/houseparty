@@ -187,27 +187,28 @@ export const MyRooms = () => {
         }}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <h2>{selectedRoom?.name}</h2>
-            <div className="files-container">
-              {allFiles.map((file: any) => {
+            <div className="files-grid">
+              {allFiles.length > 0 && allFiles.map((file: any) => {
                   const fileUrl = file.file;
                   const extension = fileUrl.split('.').pop().toLowerCase();
                   const fullFileUrl = baseUrl + fileUrl
 
                   return (
-                    <div key={file.id} className="file-content">
-                      <p>{fileUrl.split('/').pop()}</p>
-
+                    <div key={file.id} className="file-preview">
                       {['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(extension) ? (
                         <img src={fullFileUrl} alt="Uploaded file" className="preview-image" />
                       ) : extension === 'pdf' ? (
-                        <iframe src={fullFileUrl} title="PDF Preview" className="preview-pdf"></iframe>
+                        <embed width="400" height="400" src={fullFileUrl} type="application/pdf"/>    
                       ) : (
                         <p>Preview not available</p>
                       )}
+
+                      <p>{fullFileUrl.split('/').pop()}</p>
                     </div>
                   )
                 })
               }
+              {allFiles.length === 0 && <p>No Files Available</p>}
             </div>
             <button onClick={() => {
               setModalOpen(false);
