@@ -10,18 +10,20 @@ export const MyRooms = () => {
   const [user, setUser] = useState({id: null, name: null, username: null});
   const [newRoom, setNewRoom] = useState("");
   const [joinRoom, setJoinRoom] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState<any>(null);
   const navigate = useNavigate();
 
   const fetchRoomsUrl = 'http://127.0.0.1:8000/api/rooms/'
   const fetchUserInfoUrl = 'http://127.0.0.1:8000/api/auth/userinfo/'
-  const fetchJoinRoomUrl = 'http://127.0.0.1:8000/api/rooms/'
+  const fetchRoomAccess = 'http://127.0.0.1:8000/api/rooms/'
   const fetchLogoutUrl = 'http://127.0.0.1:8000/api/auth/logout/'
-  const JWTAuthToken = localStorage.getItem('token')
+  const JWTAuthToken = `Bearer ${localStorage.getItem('token')}`
 
   useEffect(() => {
     axios.get(fetchRoomsUrl, {
       headers: {
-        Authorization: `Bearer ${JWTAuthToken}`
+        Authorization: JWTAuthToken
       }
     }).then((response) => {
       setAllRooms(response.data);
@@ -35,7 +37,7 @@ export const MyRooms = () => {
   useEffect(() => {
     axios.get(fetchUserInfoUrl, {
       headers: {
-        Authorization: `Bearer ${JWTAuthToken}`
+        Authorization: JWTAuthToken
       }
     }).then((response) => {
       setUser(response.data);
@@ -54,7 +56,7 @@ export const MyRooms = () => {
     console.log('Creating room:', newRoom);
     axios.post(fetchRoomsUrl,
       { name: newRoom },
-      { headers: { Authorization: `Bearer ${JWTAuthToken}`} } 
+      { headers: { Authorization: JWTAuthToken} } 
     ).then((response) => {
       console.log('Room created:', response.data);
       setAllRooms([...allRooms, response.data]);
@@ -69,9 +71,9 @@ export const MyRooms = () => {
       console.log("Please enter a valid Room Code");
       return;
     }
-    axios.post(fetchJoinRoomUrl + joinRoom + "/access/",
+    axios.post(fetchRoomAccess + joinRoom + "/access/",
       { room_code: joinRoom },
-      { headers: { Authorization: `Bearer ${JWTAuthToken}`}}
+      { headers: { Authorization: JWTAuthToken}}
     ).then((response) => {
       if(response.data.room == null) {
         console.log(response.data.message);
@@ -89,7 +91,7 @@ export const MyRooms = () => {
   const logoutUser = () => {
     axios.post(fetchLogoutUrl, 
       { refresh: localStorage.getItem('refreshToken')},
-      { headers: { Authorization: `Bearer ${JWTAuthToken}`}}
+      { headers: { Authorization: JWTAuthToken}}
     ).then((response) => {
       console.log(response.data.message);
       localStorage.removeItem('token');
@@ -98,6 +100,17 @@ export const MyRooms = () => {
     }).catch((error) => {
       console.log(error);
     })
+  }
+
+  const leaveRoom = (room_code: string) => {
+    axios.delete(fetchRoomAccess + room_code + "/access/", 
+      { headers: { Authorization: JWTAuthToken}}
+    ).then((response) => {
+      console.log(response.data.message);
+      setAllRooms(allRooms.filter((room: any) => room.room_code !== room_code));
+    }).catch((error) => {
+      console.log(error);
+    });
   }
 
 
@@ -123,13 +136,36 @@ export const MyRooms = () => {
         <h3>My rooms</h3>
         <div className="room-list">
           {allRooms.map((room: any) => (
-              <div key={room.id} className="room-card">
+              <div 
+                key={room.id} 
+                className="room-card" 
+                onClick={() => {
+                  if (window.getSelection && window.getSelection()?.toString()) return;
+                  setModalOpen(true);
+                  setSelectedRoom(room);
+                }}>
+                  
                 <h4>{room.name}</h4>
                 <p>Code: {room.room_code}</p>
+                <button className='deleteBtn' 
+                  onClick={e => {
+                    e.stopPropagation();
+                    leaveRoom(room.room_code)}}>
+                    Leave
+                </button>
               </div>
             ))}
         </div>
       </section>
+      {modalOpen && (
+        <div className="modal-overlay" onClick={() => setModalOpen(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h2>{selectedRoom?.name}</h2>
+            <p>Code: {selectedRoom?.room_code}</p>
+            <button onClick={() => setModalOpen(false)}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
