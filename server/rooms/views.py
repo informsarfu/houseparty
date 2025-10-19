@@ -23,7 +23,6 @@ class RoomListView(APIView):
 
 
 # Delete room, get room details
-
 class RoomView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -36,6 +35,8 @@ class RoomView(APIView):
         return Response(serializer.data)
     
     def delete(self, request, room_code):
+        print("request -> ", request)
+        print("room-code -> ", room_code)
         room = Room.objects.get(room_code = room_code)
         if not room:
             return Response({"error": "Room not found."}, status=404)

@@ -141,10 +141,20 @@ section h3 {
   font-size: 12px;
 }
 
-.room-card .leave-btn {
-  margin-top: 30px;
-  padding-bottom: 2px;
+.room-card .leave-btn:hover {
+  background: linear-gradient(90deg, #63acfb 0%, #52b2fc 100%) !important;
+  
 }
+
+.delete-btn {
+  background: linear-gradient(90deg, #f87171 0%, #f56565 100%) !important;
+}
+
+.delete-btn:hover {
+  background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%) !important;
+  transform: scale(1.05);
+}
+
 
 
 .create-join-room-section {

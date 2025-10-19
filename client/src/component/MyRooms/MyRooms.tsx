@@ -21,7 +21,7 @@ export const MyRooms = () => {
   const baseUrl = "http://127.0.0.1:8000/"
   const fetchRoomsUrl = 'http://127.0.0.1:8000/api/rooms/'
   const fetchUserInfoUrl = 'http://127.0.0.1:8000/api/auth/userinfo/'
-  const fetchRoomAccess = 'http://127.0.0.1:8000/api/rooms/'
+  // const fetchRoomAccess = 'http://127.0.0.1:8000/api/rooms/'
   const fetchLogoutUrl = 'http://127.0.0.1:8000/api/auth/logout/'
   const JWTAuthToken = `Bearer ${localStorage.getItem('token')}`
 
@@ -58,7 +58,7 @@ export const MyRooms = () => {
     if(initialRender.current){
       return;
     }
-    axios.get(fetchRoomAccess + selectedRoom?.room_code + '/files/', 
+    axios.get(fetchRoomsUrl + selectedRoom?.room_code + '/files/', 
       {headers: { Authorization: JWTAuthToken}}
     ).then((response) => {
       setAllFiles(response.data);
@@ -93,7 +93,7 @@ export const MyRooms = () => {
       console.log("Please enter a valid Room Code");
       return;
     }
-    axios.post(fetchRoomAccess + joinRoom + "/access/",
+    axios.post(fetchRoomsUrl + joinRoom + "/access/",
       { room_code: joinRoom },
       { headers: { Authorization: JWTAuthToken}}
     ).then((response) => {
@@ -124,9 +124,23 @@ export const MyRooms = () => {
     })
   }
 
+//delete room
+  const deleteRoom = (room_code: string) => {
+    axios.delete(fetchRoomsUrl + room_code, 
+      { headers: { Authorization: JWTAuthToken}}
+    ).then((response) => {
+      console.log(response.data.message);
+      setAllRooms(allRooms.filter((room: any) => room.room_code !== room_code));
+    }).catch((error) => {
+      console.log("Error while deleting room -> ", error);
+    });
+  }
+
+
+
   //leave room for user
   const leaveRoom = (room_code: string) => {
-    axios.delete(fetchRoomAccess + room_code + "/access/", 
+    axios.delete(fetchRoomsUrl + room_code + "/access/", 
       { headers: { Authorization: JWTAuthToken}}
     ).then((response) => {
       console.log(response.data.message);
@@ -190,6 +204,14 @@ export const MyRooms = () => {
                     leaveRoom(room.room_code)}}>
                     Leave
                 </button>
+                {room.host === user.id && 
+                <button className='delete-btn' 
+                  onClick={e => {
+                    e.stopPropagation();
+                    deleteRoom(room.room_code)}}>
+                    Delete
+                </button>
+                }
               </div>
             ))}
         </div>
