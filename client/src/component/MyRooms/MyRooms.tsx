@@ -1,5 +1,4 @@
-import React from 'react'
-import axios, { all } from 'axios'
+import axios from 'axios'
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
 import './MyRooms.css'
@@ -267,12 +266,12 @@ export const MyRooms = () => {
                     />
                   </button>
                 </p>
-                <button className='leave-btn' 
+                {room.host != user.id && <button className='leave-btn' 
                   onClick={e => {
                     e.stopPropagation();
                     handleLeaveRoom(room.room_code)}}>
                     Leave
-                </button>
+                </button>}
                 {room.host === user.id && 
                 <button className='delete-btn' 
                   onClick={e => {
