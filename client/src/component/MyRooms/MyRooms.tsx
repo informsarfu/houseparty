@@ -36,12 +36,19 @@ export const MyRooms = () => {
       console.log("All Rooms Fetched - ", response.data);
     })
     .catch((error) => {
-      console.log("Error while fetching rooms -> ", error);
+      console.log("Error while fetching rooms -> ", error.message);
     });
   }, [])
 
   //fetch user info
   useEffect(() => {
+    //check if user logged in before routing to MyRooms component
+    if (localStorage.length === 0) {
+      console.log("USER NOT LOGGED IN");
+      navigate('/');
+      return;
+    }
+
     axios.get(fetchUserInfoUrl, {
       headers: {
         Authorization: JWTAuthToken
@@ -52,7 +59,10 @@ export const MyRooms = () => {
       console.log('User info - ', response.data);
     })
     .catch((error) => {
-      console.log("Error while fetching user info -> ", error); 
+      if (error.status === 401){
+        console.log("Error while fetching user info -> ", error.message, error.status, error.response);  //check if user logged in before routing to MyRooms component
+        navigate('/');
+      }
     })
   }, [])
 
@@ -69,7 +79,7 @@ export const MyRooms = () => {
       console.log("All Files for the user", allFiles);
     })
     .catch((error) => {
-      console.log("Error while fetching files ", error);
+      console.log("Error while fetching files ", error.message);
     })
   }, [modalOpen])
 
@@ -91,7 +101,7 @@ export const MyRooms = () => {
       setNewRoom("");
     })
     .catch((error) => {
-      console.log("Error while adding new room ", error);
+      console.log("Error while adding new room ", error.message);
     });
   }
 
@@ -116,7 +126,7 @@ export const MyRooms = () => {
       setJoinRoom("");
     })
     .catch((error) => {
-      console.log("Enter a valid Room Code", error);
+      console.log("Enter a valid Room Code", error.message);
     });
   }
 
@@ -134,7 +144,7 @@ export const MyRooms = () => {
       navigate('/');
     })
     .catch((error) => {
-      console.log("Error while logging out -> ", error);
+      console.log("Error while logging out -> ", error.message);
     })
   }
 
@@ -148,7 +158,7 @@ export const MyRooms = () => {
       setAllRooms(allRooms.filter((room: any) => room.room_code !== room_code));
     })
     .catch((error) => {
-      console.log("Error while deleting room -> ", error);
+      console.log("Error while deleting room -> ", error.message);
     });
   }
 
@@ -163,7 +173,7 @@ export const MyRooms = () => {
       setAllRooms(allRooms.filter((room: any) => room.room_code !== room_code));
     })
     .catch((error) => {
-      console.log("Error while leaving room -> ", error);
+      console.log("Error while leaving room -> ", error.message);
     });
   }
 
@@ -181,7 +191,7 @@ export const MyRooms = () => {
       setAllFiles(allFiles.filter((file: any) => file.id !== file_id));
     })
     .catch((error) => {
-      console.log("Error while leaving room -> ", error);
+      console.log("Error while leaving room -> ", error.message);
     });
   }
 
@@ -213,7 +223,7 @@ export const MyRooms = () => {
       setAllFiles((prevFiles) => [...prevFiles, response.data]);
      })
      .catch((error) => {
-      console.log("File upload failed -> ", error)
+      console.log("File upload failed -> ", error.message)
      })
     }
   }
